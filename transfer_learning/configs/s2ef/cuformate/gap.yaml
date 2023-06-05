@@ -1,0 +1,46 @@
+dataset:
+  train:
+    # path to extxyz files
+    src: data/cuformate/fcu_random-true_train.extxyz
+    # If we want to normalize each target value_ i.e. subtract the mean and
+    # divide by standard deviation_ then those 'target_mean' and 'target_std'
+    # statistics for energies and 'grad_target_mean' and 'grad_target_std'
+    # statistics for forces need to be specified here for the train split.
+    normalize_labels: True # Not used
+  val:
+    # path to extxyz files
+    src: data/cuformate/fcu_random-true_val.extxyz
+  test:
+    # path to extxyz files
+    src: data/cuformate/fcu_random-true_test.extxyz
+
+model:
+  gap_params:
+    name: soap
+    atom_sigma: 0.5
+    l_max: 6
+    n_max: 12
+    cutoff: 6.0
+    cutoff_transition_width: 1.0
+    delta: 0.2
+    covariance_type: dot_product
+    n_sparse: 1000
+    zeta: 4
+    energy_scale: 1.0
+    atom_gaussian_width: 1.0
+  other_params:
+    default_sigma: [0.001, 0.0, 0.0, 0.0]
+    e0_method: average
+
+
+# Values for logger, such as tagging and name of run
+logger:
+  tags: []
+  name: "gap-soap"
+
+task:
+  train: True
+  validate: ["val", "test"] # metrics
+  predict: ["val", "test"] # prediction
+
+runner: "GAP"

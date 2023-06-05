@@ -1,0 +1,44 @@
+# The `dataset` entry consists of `train`, `val`` and `test``, each such entry
+# has a `src` entry which is a path to the dataset (which should be an extxyz
+# file) from the top directory. By supplying different datasets to these values
+# we can easily perform prediction on a dataset differen
+#
+# In addition, the `train` entry has a boolean key `normalize_labels` which when
+# set to `True` standardizes the output by (y - m) / s where m is the empirical
+# mean and s is the empirical standard deviation calculated on the train set.
+# Note that this flag does nothing for the GAP algorithm which uses another
+# entry for standardization.
+dataset:
+  train:
+    # path to extxyz files
+    src: data/dataset1.extxyz
+    # If we want to normalize each target value_ i.e. subtract the mean and
+    # divide by standard deviation_ then those 'target_mean' and 'target_std'
+    # statistics for energies and 'grad_target_mean' and 'grad_target_std'
+    # statistics for forces need to be specified here for the train split.
+    normalize_labels: True
+  val:
+    # path to extxyz files
+    src: data/dataset2.extxyz
+  test:
+    # path to extxyz files
+    src: data/dataset3.extxyz
+
+# Values for wandb-logger, such as tagging and name of run
+logger:
+  tags: []
+  name: "mekrr-gauss-schnet"
+
+# Tasks which will be performed. Empty list `[]` skips a step.
+task:
+  train: True # Always set to True
+  validate: ["train", "val", "test"] # What datasets to validate on. Validation
+                            # is done at the end of training and simply means
+                            # calculating the different metrics after.
+  predict: ["train", "val", "test"] # What datasets to save predictions on. This
+                                    # saves the `pred_y` to a `.npz` file for
+                                    # each configuration in the datasets specified
+
+# Specifies what algorithm this config corresponds to. Used internally to use
+# the right code to train, validate and predict.
+runner: "ALG" # MEKRR | GAP | GNN | FTGNN

@@ -1,0 +1,47 @@
+dataset:
+  train:
+    # path to extxyz files
+    src: data/cuformate/fcu_random-true_train.extxyz
+    # If we want to normalize each target value_ i.e. subtract the mean and
+    # divide by standard deviation_ then those 'target_mean' and 'target_std'
+    # statistics for energies and 'grad_target_mean' and 'grad_target_std'
+    # statistics for forces need to be specified here for the train split.
+    normalize_labels: True
+  val:
+    # path to extxyz files
+    src: data/cuformate/fcu_random-true_val.extxyz
+  test:
+    # path to extxyz files
+    src: data/cuformate/fcu_random-true_test.extxyz
+
+# Values for logger, such as tagging and name of run
+logger:
+  tags: []
+  name: "mekrr-gauss-schnet"
+
+kernel:
+  alpha: 0.0 # Interpolate between w_0 and multi-weight regression
+  aggregation: mean # To use mean or sum, default has been mean
+  k0:
+    gaussian
+  k0_params:
+    median_heuristic: True
+  k1:
+    linear
+  # k1_params
+  regressor_params:
+    lmbda: 1.0e-7
+  representation_params:
+    representation_layer: 2
+  model_checkpoint_path: checkpoints/s2ef_efwt/all/schnet/schnet_all_large.pt # Path to load model checkpoint
+
+optim:
+  # Coefficient to use for the force loss. Currently unused as we only train on energy
+  force_loss_coefficient: 0.0
+
+task:
+  train: True
+  validate: ["val", "test"]
+  predict: ["val", "test"]
+
+runner: "MEKRR"

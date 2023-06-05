@@ -1,0 +1,99 @@
+dataset:
+  train:
+    # path to extxyz files
+    src: data/cuformate/fcu_random-true_train.extxyz
+    # If we want to normalize each target value_ i.e. subtract the mean and
+    # divide by standard deviation_ then those 'target_mean' and 'target_std'
+    # statistics for energies and 'grad_target_mean' and 'grad_target_std'
+    # statistics for forces need to be specified here for the train split.
+    normalize_labels: True
+  val:
+    # path to extxyz files
+    src: data/cuformate/fcu_random-true_val.extxyz
+  test:
+    # path to extxyz files
+    src: data/cuformate/fcu_random-true_test.extxyz
+
+# Values for logger, such as tagging and name of run
+logger:
+  tags: []
+  name: "schnet-ft"
+
+model:
+  name: "schnet-ft"
+  model_checkpoint_path: checkpoints/s2ef_efwt/all/schnet/schnet_all_large.pt
+  freeze_layers_up_to: 3
+  otf_graph: True                                                               # True or False
+
+optim:
+  # Batch size per GPU for training.
+  # Note that effective batch size will be 'batch_size' x no. of GPUs. # NOTE: We don't do multi-gpu training
+  batch_size: 16
+  # Batch size per GPU for evaluation.
+  # Note that effective batch size will be 'eval_batch_size' x no. of GPUs. # NOTE: We don't do multi-gpu training
+  eval_batch_size: 16
+  # No. of subprocesses to use for dataloading, pass as an arg to
+  # https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader.
+  num_workers: 8
+  # After how many updates to run evaluation on val during training.
+  # If unspecified, defaults to 1 epoch.
+  eval_every: 20
+  # Loss function to use for forces. Defaults to 'mae'.
+  #
+  # 'l2mae' has been working well for us with a force to energy coefficient
+  # ratio of 100:1.
+  #
+  # When training on raw DFT energies, 'atomwisel2' might be a better default
+  # with a force to energy coefficient ratio of 1:1. 'atomwisel2' scales L2 loss
+  # for forces by the no. of atoms in the structure.
+  ###loss_force: l2mae                                                             # 'mae' or 'mse' or 'l2mae' or 'atomwisel2'
+  # Coefficient to use for the energy loss.
+  #energy_coefficient: 1
+  #energy_loss_coefficient: 1.0
+  # Coefficient to use for the force loss.
+  force_loss_coefficient: 0.0
+  # Optimizer to use from torch.optim.
+  # Default is https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html.
+  optimizer: AdamW
+  # Learning rate. Passed as an `lr` argument when initializing the optimizer.
+  lr_initial: 1.e-4
+  # Additional args needed to initialize the optimizer.
+  optimizer_params: {"amsgrad": True}
+  # Weight decay to use. Passed as an argument when initializing the optimizer.
+  weight_decay: 0.0
+  # Learning rate scheduler. Should work for any scheduler specified in
+  # in torch.optim.lr_scheduler: https://pytorch.org/docs/stable/optim.html
+  # as long as the relevant args are specified here.
+  #
+  # For example, for ReduceLROnPlateau, we specify `mode`, `factor`, `patience`.
+  # https://pytorch.org/docs/stable/generated/torch.optim.lr_scheduler.ReduceLROnPlateau.html
+  #
+  # Note that if task.primary_metric specified earlier in the config is a metric
+  # where higher is better (e.g. 'energy_force_within_threshold' or
+  # 'average_distance_within_threshold'), `mode` should be 'max' since we'd want
+  # to step LR when the metric has stopped increasing. Vice versa for energy_mae
+  # or forces_mae or loss.
+  #
+  # If you don't want to use a scheduler, set it to 'Null' (yes type that out).
+  # This is for legacy reasons. If scheduler is unspecified, it defaults to
+  # 'LambdaLR': warming up the learning rate to 'lr_initial' and then stepping
+  # it at pre-defined set of steps. See the DimeNet++ config for how to do this.
+  scheduler: 'Null' #ReduceLROnPlateau
+  #mode: min
+  #factor: 0.8
+  #patience: 3
+  # No. of epochs to train for.
+  max_epochs: 200
+
+task:
+  train: True
+  train_objective:
+    energy: mse
+    forces: mse
+  primary_val_metric: energy_rmse
+  validate: ["val", "test"]
+  predict: ["val", "test"]
+
+runner: "FTGNN"
+
+hide_eval_progressbar: True
