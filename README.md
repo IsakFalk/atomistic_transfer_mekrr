@@ -19,9 +19,9 @@
 This repository, forked from the [OCP20
 repository](https://github.com/Open-Catalyst-Project/ocp), is the
 official implementation and contains the code needed to run the
-experiments in the NeurIPS 2023 paper **Transfer learning for atomistic
+experiments in the NeurIPS 2023 paper [**Transfer learning for atomistic
 simulations using GNNs and kernel mean
-embeddings** (ArXiv preprint [**Transfer learning for atomistic
+embeddings**](https://openreview.net/pdf?id=Enzew8XujO) (ArXiv preprint [**Transfer learning for atomistic
 simulations using GNNs and kernel mean
 embeddings**](https://arxiv.org/abs/2306.01589)), with the authors
 
