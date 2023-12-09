@@ -265,13 +265,13 @@ Fe/N<sub>2</sub> datasets.
 To cite this work, please use the below bibtex entry
 
 ``` example
-@misc{falk2023transfer,
-      title={Transfer learning for atomistic simulations using GNNs and kernel mean embeddings},
-      author={John Falk and Luigi Bonati and Pietro Novelli and Michele Parinello and Massimiliano Pontil},
-      year={2023},
-      eprint={2306.01589},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG}
+@inproceedings{
+falk2023transfer,
+title={Transfer learning for atomistic simulations using {GNN}s and kernel mean embeddings},
+author={John Isak Texas Falk and Luigi Bonati and Pietro Novelli and Michele Parrinello and massimiliano pontil},
+booktitle={Thirty-seventh Conference on Neural Information Processing Systems},
+year={2023},
+url={https://openreview.net/forum?id=Enzew8XujO}
 }
 ```
 
