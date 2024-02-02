@@ -255,7 +255,7 @@ pull-request.
 ## Contact
 
 Contact John Falk at `me@isakfalk.com` for general questions or Luigi
-Bonati at `luigig.bonati@iit.it` for questions about the
+Bonati at `luigi.bonati@iit.it` for questions about the
 Fe/N<sub>2</sub> datasets.
 
 <a id="citation"></a>
